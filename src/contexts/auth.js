@@ -1,14 +1,7 @@
 import { useState, createContext, useEffect } from "react";
-import { auth, db } from "../services/firebaseConnection";
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut,
-} from "firebase/auth";
-import { doc, getDoc, setDoc } from "firebase/firestore";
-
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import axios from "axios";
 
 export const AuthContext = createContext({});
 
@@ -27,47 +20,41 @@ function AuthProvider({ children }) {
         setUser(JSON.parse(storageUser));
         setLoading(false);
       }
-
       setLoading(false);
     }
     loadingUser();
   }, []);
 
-  async function singIn(email, password) {
+  // Novo método de login usando a API externa
+  async function signIn(cpfCnpj, senha) {
     setLoadingAuth(true);
 
-    await signInWithEmailAndPassword(auth, email, password)
-      .then(async (value) => {
-        let uid = value.user.uid;
-
-        const docRef = doc(db, "users", uid);
-        const docSnap = await getDoc(docRef);
-
-        if (!docSnap.exists()) {
-          console.error("Erro: Usuário não encontrado no Firestore.");
-          setLoadingAuth(false);
-          toast.error("Erro ao buscar dados do usuário.");
-          return;
-        }
-
-        let data = {
-          uid: uid,
-          nome: docSnap.data().nome,
-          email: value.user.email,
-          avatarUrl: docSnap.data().avatarUrl,
-        };
-
-        setUser(data);
-        storageUser(data);
-        setLoadingAuth(false);
-        toast.success("Bem Vindo " + data.nome + "!");
-        navigate("/home");
-      })
-      .catch((error) => {
-        console.log(error);
-        setLoadingAuth(false);
-        toast.error("Ops Algo deu errado!");
+    try {
+      const response = await axios.post("http://10.0.1.41:8085/auth/login", {
+        cpfCnpj,
+        senha,
       });
+
+      const data = response.data;
+
+      const userData = {
+        token: data.token,
+        nome: data.nome,
+        cpfCnpj: data.cpfCnpj,
+        avatarUrl: data.avatarUrl || null,
+      };
+
+      setUser(userData);
+      storageUser(userData);
+      toast.success(`Bem-vindo(a) ${data.nome}!`);
+      return true;
+    } catch (error) {
+      console.error("Erro ao autenticar:", error);
+      toast.error("CPF/CNPJ ou senha inválidos!");
+      return false;
+    } finally {
+      setLoadingAuth(false);
+    }
   }
 
   function storageUser(data) {
@@ -85,8 +72,7 @@ function AuthProvider({ children }) {
       value={{
         signed: !!user,
         user,
-        singIn,
-        signOut,
+        signIn,
         logout,
         loadingAuth,
         loading,

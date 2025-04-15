@@ -27,6 +27,16 @@ export default function Header() {
         Minhas OS
       </Link>
 
+      {/* <Link to="/" className="nav-link">
+        <FiLogOut color="#FFF" size={24}></FiLogOut>
+        Sair
+      </Link> */}
+
+      <div className="sidebar-footer">
+        <div className="user-info">
+        </div>
+        <span>{user?.nome}</span>
+      </div>
     </div>
   );
 }
