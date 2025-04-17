@@ -33,7 +33,10 @@ function AuthProvider({ children }) {
       const response = await axios.post("http://10.0.1.41:8085/auth/login", {
         cpfCnpj,
         senha,
-      });
+      }, 
+      {
+        timeout: 5000, // 5 segundos
+      })
 
       const data = response.data;
 
@@ -41,7 +44,6 @@ function AuthProvider({ children }) {
         token: data.token,
         nome: data.nome,
         cpfCnpj: data.cpfCnpj,
-        avatarUrl: data.avatarUrl || null,
       };
 
       setUser(userData);
@@ -50,7 +52,12 @@ function AuthProvider({ children }) {
       return true;
     } catch (error) {
       console.error("Erro ao autenticar:", error);
-      toast.error("CPF/CNPJ ou senha inválidos!");
+
+      if (error.code === 'ECONNABORTED') {
+        toast.error("Tempo de resposta excedido. Tente novamente mais tarde.");
+      } else {
+        toast.error("CPF/CNPJ ou senha inválidos!");
+      }
       return false;
     } finally {
       setLoadingAuth(false);

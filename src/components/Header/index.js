@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { Link } from "react-router-dom";
 
 import { AuthContext } from "../../contexts/auth";
-import { FiHome, FiMessageCircle } from "react-icons/fi";
+import { FiHome, FiLogOut, FiMessageCircle } from "react-icons/fi";
 
 import logo from "../../assets/logoG3.png";
 
@@ -27,10 +27,10 @@ export default function Header() {
         Minhas OS
       </Link>
 
-      {/* <Link to="/" className="nav-link">
+      <Link to="/" className="nav-link">
         <FiLogOut color="#FFF" size={24}></FiLogOut>
         Sair
-      </Link> */}
+      </Link>
 
       <div className="sidebar-footer">
         <div className="user-info">
