@@ -10,46 +10,78 @@ export default function Modal({ conteudo, close }) {
         </button>
 
         <main>
-          <h2>Detalhes do chamado</h2>
+          <h2>Detalhes da Ordem de Serviço</h2>
 
           <div className="row">
             <span>
-              Cliente: <i>{conteudo?.cliente}</i>
+              Código OS: <i>{conteudo?.idOs}</i>
             </span>
           </div>
 
           <div className="row">
             <span>
-              Assunto: <i>{conteudo?.assunto}</i>
-            </span>
-            <span>
-              Cadastrado em: <i>{conteudo?.cadastrado}</i>
+              Código Cliente: <i>{conteudo?.idcliente}</i>
             </span>
           </div>
 
           <div className="row">
             <span>
-              Status:
+              Nome: <i>{conteudo?.nome}</i>
+            </span>
+          </div>
+
+          <div className="row">
+            <span>
+              CPF/CNPJ: <i>{conteudo?.cpfCnpj}</i>
+            </span>
+          </div>
+
+          <div className="row">
+            <span>
+              Técnico: <i>{conteudo?.tecnico}</i>
+            </span>
+          </div>
+
+          <div className="row">
+            <span>
+              Equipamento: <i>{conteudo?.equipamento}</i>
+            </span>
+            <span>
+              Marca: <i>{conteudo?.marca}</i>
+            </span>
+            <span>
+              Modelo: <i>{conteudo?.modelo}</i>
+            </span>
+          </div>
+
+          <div className="row">
+            <span>
+              Garantia: <i>{conteudo?.garantia}</i>
+            </span>
+            <span>
+              Entrada:{" "}
+              <i>{new Date(conteudo?.dataEntrada).toLocaleDateString("pt-BR")}</i>
+            </span>
+          </div>
+
+          <div className="row">
+            <span>
+              Última Situação:
               <i
                 className="status-badge"
                 style={{
                   color: "#FFF",
                   backgroundColor:
-                    conteudo?.status === "Aberto" ? "#5cb85c" : "#999",
+                    conteudo?.ultSituacao === "Aberto" ? "#5cb85c" : "#999",
                 }}
               >
-                {conteudo?.status}
+                {new Date(conteudo?.dataUltSituacao).toLocaleDateString("pt-BR")}
               </i>
             </span>
           </div>
 
-          <h3>Complemento</h3>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aperiam
-            ratione fugit optio, illum, sint recusandae mollitia nostrum fuga
-            consectetur ipsa vel distinctio cupiditate atque officia nesciunt et
-            quae. Obcaecati, tempora!
-          </p>
+          <h3>Problema relatado:</h3>
+          <p>{conteudo?.problemaRelatado}</p>
         </main>
       </div>
     </div>
