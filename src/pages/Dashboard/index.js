@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { FiMessageCircle, FiSearch } from "react-icons/fi";
 import Header from "../../components/Header";
 import Title from "../../components/Title";
@@ -28,7 +27,8 @@ export default function Dashboard() {
             },
           }
         );
-        setChamados(response.data); // <- aqui deve vir a lista de OS
+        const sortedChamados = response.data.sort((a, b) => b.idOs - a.idOs);
+        setChamados(sortedChamados); // <- aqui deve vir a lista de OS
       } catch (error) {
         console.error("Erro ao carregar OS:", error);
       } finally {
@@ -64,7 +64,7 @@ export default function Dashboard() {
               <th scope="col">GARANTIA</th>
               <th scope="col">SITUAÇÃO</th>
               <th scope="col">DATA ENTRADA</th>
-              <th scope="col">#</th>
+              <th scope="col">Detalhes</th>
             </tr>
           </thead>
           <tbody>
@@ -73,14 +73,13 @@ export default function Dashboard() {
                 <td data-label="Id">{chamado.idOs}</td>
                 <td data-label="Equipamento">{chamado.equipamento}</td>
                 <td data-label="Garantia">{chamado.garantia}</td>
-                <td data-label="Situacap">
+                <td data-label="Situação">
                   {chamado.situacao}
-                  <span className="badge">{chamado.situacao}</span>
                 </td>
                 <td data-label="Cadastrado">
                   {new Date(chamado.dataEntrada).toLocaleDateString()}
                 </td>
-                <td data-label="#">
+                <td data-label="Detalhes">
                   <button
                     className="action"
                     style={{ backgroundColor: "#3583f6" }}
