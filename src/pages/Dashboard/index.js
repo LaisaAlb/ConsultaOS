@@ -3,23 +3,43 @@ import { FiMessageCircle, FiSearch } from "react-icons/fi";
 import Header from "../../components/Header";
 import Title from "../../components/Title";
 import "./dashboard.css";
-import { useState } from "react";
 import Modal from "../../components/Modal";
+import { useEffect, useContext, useState } from "react";
+import axios from "axios";
+import { AuthContext } from "../../contexts/auth";
 
 export default function Dashboard() {
+  const [chamados, setChamados] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [showPostModal, setShowPostModal] = useState(false);
   const [conteudoModal, setConteudoModal] = useState(null);
 
+  const { user } = useContext(AuthContext);
+
   // Simulação dos dados (pode vir de uma API no futuro)
-  const chamados = [
-    {
-      id: 1,
-      cliente: "João",
-      assunto: "Impressora - Falha na impressão",
-      status: "Aberto",
-      cadastrado: "10/10/2024",
-    },
-  ];
+  useEffect(() => {
+    async function loadChamados() {
+      try {
+        const response = await axios.get(
+          `http://10.0.1.41:8085/api/os/${user.idCliente}`, // ou id, se for outro campo
+          {
+            headers: {
+              Authorization: `Bearer ${user.token}`,
+            },
+          }
+        );
+        setChamados(response.data); // <- aqui deve vir a lista de OS
+      } catch (error) {
+        console.error("Erro ao carregar OS:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    if (user) {
+      loadChamados();
+    }
+  }, [user]);
 
   // Função para abrir o modal e passar os dados do chamado
   function handleOpenModal(chamado) {
@@ -39,34 +59,32 @@ export default function Dashboard() {
         <table>
           <thead>
             <tr>
-              <th scope="col">id</th>
-              <th scope="col">Cliente</th>
-              <th scope="col">Assunto</th>
-              <th scope="col">Status</th>
-              <th scope="col">Cadastrado em</th>
+              <th scope="col">CÓDIGO</th>
+              <th scope="col">EQUIPAMENTO</th>
+              <th scope="col">GARANTIA</th>
+              <th scope="col">SITUAÇÃO</th>
+              <th scope="col">DATA ENTRADA</th>
               <th scope="col">#</th>
             </tr>
           </thead>
           <tbody>
             {chamados.map((chamado) => (
-              <tr key={chamado.id}>
-                <td data-label="Id">{chamado.id}</td>
-                <td data-label="Cliente">{chamado.cliente}</td>
-                <td data-label="Assunto">
-                  {chamado.assunto.length > 10
-                    ? chamado.assunto.slice(0, 10) + "..."
-                    : chamado.assunto}
+              <tr key={chamado.idOs}>
+                <td data-label="Id">{chamado.idOs}</td>
+                <td data-label="Equipamento">{chamado.equipamento}</td>
+                <td data-label="Garantia">{chamado.garantia}</td>
+                <td data-label="Situacap">
+                  {chamado.situacao}
+                  <span className="badge">{chamado.situacao}</span>
                 </td>
-                <td data-label="Status">
-                  {chamado.status}
-                  <span className="badge">{chamado.status}</span>
+                <td data-label="Cadastrado">
+                  {new Date(chamado.dataEntrada).toLocaleDateString()}
                 </td>
-                <td data-label="Cadastrado">{chamado.cadastrado}</td>
                 <td data-label="#">
                   <button
                     className="action"
                     style={{ backgroundColor: "#3583f6" }}
-                    onClick={() => handleOpenModal(chamado)} // 🛠️ Abrir modal com dados
+                    onClick={() => handleOpenModal(chamado)}
                   >
                     <FiSearch color="#FFF" size={17} />
                   </button>

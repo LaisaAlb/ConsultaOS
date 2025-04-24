@@ -41,9 +41,9 @@ function AuthProvider({ children }) {
       const data = response.data;
 
       const userData = {
-        token: data.token,
         nome: data.nome,
         cpfCnpj: data.cpfCnpj,
+        idCliente: data.idCliente,
       };
 
       setUser(userData);
