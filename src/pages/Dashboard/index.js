@@ -20,7 +20,7 @@ export default function Dashboard() {
     async function loadChamados() {
       try {
         const response = await axios.get(
-          `http://10.0.1.41:8085/api/os/${user.idCliente}`, // ou id, se for outro campo
+          `http://10.0.1.41:8080/api/os/${user.idCliente}`, // ou id, se for outro campo
           {
             headers: {
               Authorization: `Bearer ${user.token}`,

@@ -30,7 +30,7 @@ function AuthProvider({ children }) {
     setLoadingAuth(true);
 
     try {
-      const response = await axios.post("http://10.0.1.41:8085/auth/login", {
+      const response = await axios.post("http://10.0.1.41:8080/auth/login", {
         cpfCnpj,
         senha,
       }, 
